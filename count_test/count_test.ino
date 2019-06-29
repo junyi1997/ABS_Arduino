@@ -7,14 +7,11 @@ bool _ABVAR_2_BTL= false ;
 int _ABVAR_3_count = 0 ;
 int A[300];
 int a=0;
-const int motorIn1=5;
-const int motorIn2=6;
+
 void setup() {
   pinMode( 2 , INPUT);
   Serial.begin(9600);
-  pinMode(motorIn1,OUTPUT);
-  pinMode(motorIn2,OUTPUT);
-  analogWrite(motorIn2,0);
+
 }
  
 void loop() {
@@ -45,10 +42,7 @@ void count_step(){
 
 void count_sort(){
   A[a]+=_ABVAR_3_count;
-  //Serial.println(_ABVAR_3_count);
-  if(_ABVAR_3_count>40){
-    step_stop();
-    } 
+  Serial.println(_ABVAR_3_count);
   _ABVAR_3_count=0;
   }
 
@@ -60,10 +54,3 @@ void count_Total(){
   a++;
   Serial.println();
   } 
-
-void step_stop(){
-  analogWrite(motorIn1,255);
-  delay(174);  
-  analogWrite(motorIn1,0);
-  delay(3);
-  }     
