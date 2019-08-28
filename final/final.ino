@@ -33,11 +33,9 @@ void loop() {
     time_2=currentTime2;
   }else{
     count_step();
+    analogWrite(motorIn1,0);
     //Serial.println(digitalRead(Btn_ABS_ONOFF));
-    if(digitalRead(Btn_Stop)==1){
-         step_stop();
-         delay(300);
-    }
+    if(digitalRead(Btn_Stop)==1){analogWrite(motorIn1,255);}
   }
 }
 void count_step(){
