@@ -2,6 +2,9 @@
 #include <SoftwareSerial.h>
 SoftwareSerial BT(9,10);   // 接收腳(RX), 傳送腳(TX)；接HC-06之TXD、RXD；先不要用0,1,因為USB用
 char val; //接收字串
+String send_data="";
+String send_data0="";
+
 
 //-----millis計數器-----//
 #define INTERVAL_MESSAGE1 30000
@@ -52,10 +55,10 @@ void loop() {
     //Serial.println(digitalRead(Btn_ABS_ONOFF));
     
   }
-  /*if(BT.available()){
+  if(BT.available()){
     val=BT.read();
     Serial.println(val);
-  }*/
+  }
 }
 void count_step(){
   _ABVAR_1_BTS = digitalRead(2) ;
@@ -74,10 +77,12 @@ void count_sort(){
   A[a]+=_ABVAR_3_count;
   Serial.print(i);
   Serial.print(" ");
-  BT.print(_ABVAR_3_count);
-  //BT.println("12");
- 
-  Serial.println(_ABVAR_3_count);
+  if(_ABVAR_3_count<10){send_data0='0'+String(_ABVAR_3_count);}
+  else{send_data0=_ABVAR_3_count;}
+  send_data=String(send_data0)+','+String(digitalRead(Btn_Stop))+','+String(digitalRead(Btn_ABS_ONOFF));
+  BT.print(send_data);
+  Serial.println(send_data);
+  //Serial.println(_ABVAR_3_count);
   
   i++;
   if(_ABVAR_3_count>=15){
