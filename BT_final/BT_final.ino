@@ -1,26 +1,27 @@
 //------Arduino藍芽設定------//
 #include <SoftwareSerial.h>
 SoftwareSerial BT(9,10);   // 接收腳(RX), 傳送腳(TX)；接HC-06之TXD、RXD；先不要用0,1,因為USB用
-char val; //接收字串
-String send_data="";
-String send_data0="";
+//int val; //藍芽接收字串
+char val; //藍芽接收字串
+String send_data="";//紀錄轉速
+String send_data0="";//整合藍芽傳送訊息(轉速+煞車+ABS是否自動)
 
 
 //-----millis計數器-----//
-#define INTERVAL_MESSAGE1 30000
-#define INTERVAL_MESSAGE2 300
+#define INTERVAL_MESSAGE1 30000 //顯示平均值
+#define INTERVAL_MESSAGE2 300   //單次紀錄
 unsigned long time_1 = 0;
 unsigned long time_2 = 0;
 
 //------轉速觸發------//
-bool _ABVAR_1_BTS= false ;
-bool _ABVAR_2_BTL= false ;
-int _ABVAR_3_count = 0 ;
+bool _ABVAR_1_BTS= false ;//記錄當下狀態
+bool _ABVAR_2_BTL= false ;//記錄上一筆狀態
+int _ABVAR_3_count = 0 ;//紀錄結果
 
 //------暫存器------//
 int A[100];//紀錄轉速陣列
 int a=0;//陣列計數器
-int i=0;//抬頭數字
+int i=0;//抬頭數
 
 //------Arduino腳位設定------//
 const int motorIn1=5;//定義馬達接腳1為5
@@ -57,10 +58,11 @@ void loop() {
   }
   if(BT.available()){
     val=BT.read();
+    Serial.print("BT收到的訊息為：");
     Serial.println(val);
   }
 }
-void count_step(){
+void count_step(){  //紀錄轉速
   _ABVAR_1_BTS = digitalRead(2) ;
   if (( ( _ABVAR_1_BTS ) != ( _ABVAR_2_BTL ) ))
   {
@@ -73,7 +75,7 @@ void count_step(){
   
   }
 
-void count_sort(){
+void count_sort(){  //短時間紀錄
   A[a]+=_ABVAR_3_count;
   Serial.print(i);
   Serial.print(" ");
@@ -93,7 +95,7 @@ void count_sort(){
   _ABVAR_3_count=0;
   }
 
-void count_Total(){
+void count_Total(){  //短時間紀錄
   Serial.print("A[");
   Serial.print(a);
   Serial.print("]");
@@ -102,7 +104,7 @@ void count_Total(){
   Serial.println();
   } 
 
-void step_stop(){
+void step_stop(){  //ABS剎車
   analogWrite(motorIn1,255);
   delay(90);  
   analogWrite(motorIn1,0);
