@@ -23,14 +23,14 @@ void setup() {
 }
  
 void loop() {
-  unsigned long currentTime2 = millis();
-  unsigned long currentTime1 = millis();
-  if ((currentTime1-time_1)==INTERVAL_MESSAGE2){
+  unsigned long currentTime2 = millis();//紀錄自程序啟動以來經過的毫秒數
+  unsigned long currentTime1 = millis();//紀錄自程序啟動以來經過的毫秒數
+  if ((currentTime1-time_1)==INTERVAL_MESSAGE2){//如果時間經過300ms
     count_sort();
-    time_1=currentTime1;
-  }else if((currentTime2-time_2)>INTERVAL_MESSAGE1){
+    time_1=currentTime1;//更新時間
+  }else if((currentTime2-time_2)>INTERVAL_MESSAGE1){//如果時間經過3000ms
     count_Total();
-    time_2=currentTime2;
+    time_2=currentTime2;//更新時間
   }else{
     count_step();
     analogWrite(motorIn1,0);
@@ -38,42 +38,47 @@ void loop() {
     
   }
 }
-void count_step(){
+void count_step(){//計算轉速感測器觸發次數並儲存於_ABVAR_3_count中
   _ABVAR_1_BTS = digitalRead(2) ;
-  if (( ( _ABVAR_1_BTS ) != ( _ABVAR_2_BTL ) ))
+  if (( ( _ABVAR_1_BTS ) != ( _ABVAR_2_BTL ) ))//現在的狀態與上一次的狀態不一樣
   {
     if (( ( _ABVAR_1_BTS ) == ( HIGH ) ))
     {
       _ABVAR_3_count = ( _ABVAR_3_count + 1 ) ;
     }
   }
-  _ABVAR_2_BTL = _ABVAR_1_BTS ;
+  _ABVAR_2_BTL = _ABVAR_1_BTS ;//更新上一步狀態
   }
 
 void count_sort(){
+  //↓顯示於畫面中的編排↓
   A[a]+=_ABVAR_3_count;
   Serial.print(i);
   Serial.print(" ");
   Serial.println(_ABVAR_3_count);
   i++;
-  if(_ABVAR_3_count>=15){
-    if(digitalRead(Btn_ABS_ONOFF)==1){
+  //↑顯示於畫面中的編排↑
+  
+  if(_ABVAR_3_count>=15){//在300ms內轉速感測器觸發15次以上
+    if(digitalRead(Btn_ABS_ONOFF)==1){//ABS啟動按鈕有打開
     step_stop();
     }}
-  if(digitalRead(Btn_Stop)==1){step_stop();}  
-  _ABVAR_3_count=0;
+  if(digitalRead(Btn_Stop)==1){step_stop();} //煞車按鈕有按下
+  _ABVAR_3_count=0;//計數器歸零
   }
 
 void count_Total(){
+  //↓顯示於畫面中的編排↓
   Serial.print("A[");
   Serial.print(a);
   Serial.print("]");
   Serial.print(A[a]);
   a++;
   Serial.println();
+  //↑顯示於畫面中的編排↑
   } 
 
-void step_stop(){
+void step_stop(){//執行剎車(穩定轉速不殺死)
   analogWrite(motorIn1,255);
   delay(90);  
   analogWrite(motorIn1,0);
