@@ -78,6 +78,7 @@ void count_Total(){
   //↑顯示於畫面中的編排↑
   } 
 
+
 void step_stop(){//執行剎車(穩定轉速不殺死)
   analogWrite(motorIn1,255);
   delay(90);  
